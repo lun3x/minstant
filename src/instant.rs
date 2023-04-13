@@ -232,6 +232,11 @@ pub struct Anchor {
     cycle: u64,
 }
 
+// These implementations only hold if the machine we are using has a single TSC unit.
+// ie. a single CPU
+unsafe impl Send for Anchor {}
+unsafe impl Sync for Anchor {}
+
 impl Default for Anchor {
     fn default() -> Self {
         Self::new()
