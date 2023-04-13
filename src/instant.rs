@@ -172,9 +172,9 @@ impl Instant {
     }
 
     pub fn unix_epoch(anchor: &Anchor) -> Instant {
-        let signed =
-            (anchor.unix_time_ns as f64 / crate::nanos_per_cycle() + anchor.cycle as f64) as i64;
-        Instant(signed.try_into().unwrap_or(0))
+        let signed_cycle =
+            anchor.cycle as i64 - ((anchor.unix_time_ns as f64 / crate::nanos_per_cycle()) as i64);
+        Instant(signed_cycle.try_into().unwrap_or(0))
     }
 }
 
