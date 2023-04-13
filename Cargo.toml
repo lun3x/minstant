@@ -12,7 +12,7 @@ readme = "README.md"
 keywords = ["TSC", "clock", "rdtsc", "timing", "nanosecond"]
 
 [dependencies]
-ctor = "0.2"
+ctor = "0.1.26"
 
 [target.'cfg(not(target_os = "wasi"))'.dependencies]
 libc = "0.2"
