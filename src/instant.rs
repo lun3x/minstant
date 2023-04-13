@@ -1,6 +1,7 @@
 // Copyright 2021 TiKV Project Authors. Licensed under Apache-2.0.
 
 use std::{
+    convert::TryInto,
     ops::{Add, AddAssign, Sub, SubAssign},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
@@ -12,8 +13,6 @@ use std::{
 pub struct Instant(u64);
 
 impl Instant {
-    pub const ZERO: Instant = Instant(0);
-
     #[inline]
     /// Returns an instant corresponding to "now".
     ///
@@ -170,6 +169,12 @@ impl Instant {
             let backward_ns = ((anchor.cycle - self.0) as f64 * crate::nanos_per_cycle()) as u64;
             anchor.unix_time_ns - backward_ns
         }
+    }
+
+    pub fn unix_epoch(anchor: &Anchor) -> Instant {
+        let signed =
+            (anchor.unix_time_ns as f64 / crate::nanos_per_cycle() + anchor.cycle as f64) as i64;
+        Instant(signed.try_into().unwrap_or(0))
     }
 }
 
