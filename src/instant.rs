@@ -12,6 +12,8 @@ use std::{
 pub struct Instant(u64);
 
 impl Instant {
+    pub const ZERO: Instant = Instant(0);
+
     #[inline]
     /// Returns an instant corresponding to "now".
     ///
