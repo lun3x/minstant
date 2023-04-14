@@ -15,7 +15,7 @@ extern "system" {
 type clockid_t = libc::c_int;
 
 #[cfg(target_os = "macos")]
-const CLOCK_MONOTONIC_RAW_APPROX: clockid_t = 5;
+const CLOCK_MONOTONIC_RAW: clockid_t = 4;
 
 #[cfg(target_os = "macos")]
 extern "system" {
@@ -39,7 +39,7 @@ pub(crate) fn current_cycle() -> u64 {
 #[cfg(target_os = "macos")]
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
-    unsafe { clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW_APPROX) }
+    unsafe { clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW) }
 }
 
 #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
