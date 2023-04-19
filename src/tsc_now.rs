@@ -73,7 +73,7 @@ pub(crate) fn current_cycle() -> u64 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum TSCLevel {
     Stable {
         cycles_per_second: u64,
