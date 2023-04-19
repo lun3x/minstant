@@ -28,6 +28,7 @@ unsafe impl Sync for TSCState {}
 #[ctor::ctor]
 unsafe fn init() {
     let tsc_level = TSCLevel::get();
+    tracing::info!("{tsc_level:?}");
     let is_tsc_available = match &tsc_level {
         TSCLevel::Stable { .. } => true,
         TSCLevel::PerCPUStable { .. } => true,
@@ -68,6 +69,7 @@ pub(crate) fn current_cycle() -> u64 {
     }
 }
 
+#[derive(Debug)]
 enum TSCLevel {
     Stable {
         cycles_per_second: u64,
