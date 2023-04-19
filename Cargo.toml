@@ -1,6 +1,6 @@
 [package]
 name = "minstant"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["The TiKV Authors"]
 edition = "2018"
 license = "MIT"
@@ -13,6 +13,7 @@ keywords = ["TSC", "clock", "rdtsc", "timing", "nanosecond"]
 
 [dependencies]
 ctor = "0.1.26"
+tracing = "0.1"
 
 [target.'cfg(not(target_os = "wasi"))'.dependencies]
 libc = "0.2"

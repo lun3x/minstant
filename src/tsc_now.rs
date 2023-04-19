@@ -241,6 +241,7 @@ fn try_read_tsc_freq_khz() -> Result<u64, TscReadError> {
 ///   2. sync TSCs between all CPUs
 fn cycles_per_sec(anchor: Instant) -> (u64, u64) {
     let (cps, last_monotonic, last_tsc) = if let Ok(tsc_freq_khz) = try_read_tsc_freq_khz() {
+        tracing::info!("Read {tsc_freq_khz} from kernel tsc_freq_khz");
         let (last_monotonic, last_tsc) = monotonic_with_tsc();
         (tsc_freq_khz * 1000, last_monotonic, last_tsc)
     } else {
@@ -280,6 +281,7 @@ fn _calculate_cycles_per_sec() -> (u64, Instant, u64) {
         old_cycles = cycles_per_sec;
     }
 
+    tracing::info!("Measured {cycles_per_sec} cycles_per_sec");
     (cycles_per_sec.round() as u64, last_monotonic, last_tsc)
 }
 
