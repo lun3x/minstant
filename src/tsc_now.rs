@@ -48,7 +48,7 @@ pub(crate) fn is_tsc_available() -> bool {
 
 #[inline]
 pub(crate) fn get_tsc_level() -> TSCLevel {
-    unsafe { *TSC_STATE.tsc_level.get() }
+    unsafe { *TSC_STATE.tsc_level.get().clone() }
 }
 
 #[inline]
@@ -73,7 +73,7 @@ pub(crate) fn current_cycle() -> u64 {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Clone)]
 pub enum TSCLevel {
     Stable {
         cycles_per_second: u64,
