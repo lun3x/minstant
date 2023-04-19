@@ -28,7 +28,6 @@ unsafe impl Sync for TSCState {}
 #[ctor::ctor]
 unsafe fn init() {
     let tsc_level = TSCLevel::get();
-    tracing::info!("{tsc_level:?}");
     let is_tsc_available = match &tsc_level {
         TSCLevel::Stable { .. } => true,
         TSCLevel::PerCPUStable { .. } => true,
@@ -45,6 +44,11 @@ unsafe fn init() {
 #[inline]
 pub(crate) fn is_tsc_available() -> bool {
     unsafe { *TSC_STATE.is_tsc_available.get() }
+}
+
+#[inline]
+pub(crate) fn get_tsc_level() -> TSCLevel {
+    unsafe { *TSC_STATE.tsc_level.get() }
 }
 
 #[inline]
@@ -70,7 +74,7 @@ pub(crate) fn current_cycle() -> u64 {
 }
 
 #[derive(Debug)]
-enum TSCLevel {
+pub enum TSCLevel {
     Stable {
         cycles_per_second: u64,
         cycles_from_anchor: u64,
@@ -243,7 +247,6 @@ fn try_read_tsc_freq_khz() -> Result<u64, TscReadError> {
 ///   2. sync TSCs between all CPUs
 fn cycles_per_sec(anchor: Instant) -> (u64, u64) {
     let (cps, last_monotonic, last_tsc) = if let Ok(tsc_freq_khz) = try_read_tsc_freq_khz() {
-        tracing::info!("Read {tsc_freq_khz} from kernel tsc_freq_khz");
         let (last_monotonic, last_tsc) = monotonic_with_tsc();
         (tsc_freq_khz * 1000, last_monotonic, last_tsc)
     } else {
@@ -283,7 +286,6 @@ fn _calculate_cycles_per_sec() -> (u64, Instant, u64) {
         old_cycles = cycles_per_sec;
     }
 
-    tracing::info!("Measured {cycles_per_sec} cycles_per_sec");
     (cycles_per_sec.round() as u64, last_monotonic, last_tsc)
 }
 

@@ -37,6 +37,8 @@ mod instant;
 mod tsc_now;
 
 pub use instant::{Anchor, Instant};
+#[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
+pub use tsc_now::TscLevel;
 
 /// Return `true` if the current platform supports [TSC](https://en.wikipedia.org/wiki/Time_Stamp_Counter),
 /// and the calibration has succeed.
@@ -51,6 +53,14 @@ pub fn is_tsc_available() -> bool {
     #[cfg(not(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64"))))]
     {
         false
+    }
+}
+
+#[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
+#[inline]
+pub fn get_tsc_level() -> TscLevel {
+    {
+        tsc_now::get_tsc_level()
     }
 }
 
