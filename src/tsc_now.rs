@@ -48,7 +48,7 @@ pub(crate) fn is_tsc_available() -> bool {
 
 #[inline]
 pub(crate) fn get_tsc_level() -> TSCLevel {
-    unsafe { *TSC_STATE.tsc_level.get().clone() }
+    unsafe { (*TSC_STATE.tsc_level.get()).clone() }
 }
 
 #[inline]
