@@ -64,14 +64,7 @@ pub(crate) fn current_cycle() -> u64 {
 
 #[inline]
 pub(crate) fn nanos_per_cycle() -> f64 {
-    #[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
-    {
-        tsc_now::nanos_per_cycle()
-    }
-    #[cfg(not(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64"))))]
-    {
-        1.0
-    }
+    1.0
 }
 
 #[cfg(test)]

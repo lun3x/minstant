@@ -30,7 +30,7 @@ const CLOCK_MONOTONIC_FAST: clockid_t = 12;
 pub(crate) fn current_cycle() -> u64 {
     let mut tp = MaybeUninit::<libc::timespec>::uninit();
     let tp = unsafe {
-        libc::clock_gettime(libc::CLOCK_MONOTONIC, tp.as_mut_ptr());
+        libc::clock_gettime(libc::CLOCK_REALTIME, tp.as_mut_ptr());
         tp.assume_init()
     };
     tp.tv_sec as u64 * 1_000_000_000 + tp.tv_nsec as u64
