@@ -46,14 +46,7 @@ pub use tsc_now::TSCLevel;
 /// The result is always the same during the lifetime of the application process.
 #[inline]
 pub fn is_tsc_available() -> bool {
-    #[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
-    {
-        tsc_now::is_tsc_available()
-    }
-    #[cfg(not(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64"))))]
-    {
-        false
-    }
+    false
 }
 
 #[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
