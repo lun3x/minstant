@@ -15,7 +15,7 @@ extern "system" {
 type clockid_t = libc::c_int;
 
 #[cfg(target_os = "macos")]
-const CLOCK_MONOTONIC_RAW: clockid_t = 4;
+const CLOCK_MONOTONIC: clockid_t = 6;
 
 #[cfg(target_os = "macos")]
 extern "system" {
@@ -30,7 +30,7 @@ const CLOCK_MONOTONIC_FAST: clockid_t = 12;
 pub(crate) fn current_cycle() -> u64 {
     let mut tp = MaybeUninit::<libc::timespec>::uninit();
     let tp = unsafe {
-        libc::clock_gettime(libc::CLOCK_MONOTONIC_COARSE, tp.as_mut_ptr());
+        libc::clock_gettime(libc::CLOCK_MONOTONIC, tp.as_mut_ptr());
         tp.assume_init()
     };
     tp.tv_sec as u64 * 1_000_000_000 + tp.tv_nsec as u64
@@ -39,7 +39,7 @@ pub(crate) fn current_cycle() -> u64 {
 #[cfg(target_os = "macos")]
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
-    unsafe { clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW) }
+    unsafe { clock_gettime_nsec_np(CLOCK_MONOTONIC) }
 }
 
 #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
