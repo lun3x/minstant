@@ -66,16 +66,7 @@ pub fn get_tsc_level() -> TSCLevel {
 
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
-    #[cfg(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64")))]
-    if is_tsc_available() {
-        tsc_now::current_cycle()
-    } else {
-        coarse_now::current_cycle()
-    }
-    #[cfg(not(all(target_os = "linux", any(target_arch = "x86", target_arch = "x86_64"))))]
-    {
-        coarse_now::current_cycle()
-    }
+    coarse_now::current_cycle()
 }
 
 #[inline]

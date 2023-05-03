@@ -161,20 +161,8 @@ impl Instant {
     /// let expected = UNIX_EPOCH.elapsed().unwrap().as_nanos();
     /// assert!((instant.as_unix_nanos(&anchor) as i64 - expected as i64).abs() < 1_000_000);
     /// ```
-    pub fn as_unix_nanos(&self, anchor: &Anchor) -> u64 {
-        if self.0 > anchor.cycle {
-            let forward_ns = ((self.0 - anchor.cycle) as f64 * crate::nanos_per_cycle()) as u64;
-            anchor.unix_time_ns + forward_ns
-        } else {
-            let backward_ns = ((anchor.cycle - self.0) as f64 * crate::nanos_per_cycle()) as u64;
-            anchor.unix_time_ns - backward_ns
-        }
-    }
-
-    pub fn unix_epoch(anchor: &Anchor) -> Instant {
-        let signed_cycle =
-            anchor.cycle as i64 - ((anchor.unix_time_ns as f64 / crate::nanos_per_cycle()) as i64);
-        Instant(signed_cycle.try_into().unwrap_or(0))
+    pub fn as_unix_nanos(&self, _anchor: &Anchor) -> u64 {
+        self.0
     }
 }
 
