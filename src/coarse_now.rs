@@ -15,22 +15,28 @@ extern "system" {
 type clockid_t = libc::c_int;
 
 #[cfg(target_os = "macos")]
-const CLOCK_MONOTONIC_RAW_APPROX: clockid_t = 5;
+const CLOCK_REALTIME: clockid_t = 6;
+// #[cfg(target_os = "macos")]
+// const CLOCK_MONOTONIC_RAW: clockid_t = 4;
+// #[cfg(target_os = "macos")]
+// const CLOCK_MONOTONIC_RAW_APPROX: clockid_t = 5;
+// #[cfg(target_os = "macos")]
+// const CLOCK_MONOTONIC: clockid_t = 6;
 
 #[cfg(target_os = "macos")]
 extern "system" {
     pub fn clock_gettime_nsec_np(clk_id: clockid_t) -> u64;
 }
 
-#[cfg(target_os = "freebsd")]
-const CLOCK_MONOTONIC_FAST: clockid_t = 12;
+// #[cfg(target_os = "freebsd")]
+// const CLOCK_MONOTONIC_FAST: clockid_t = 12;
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
     let mut tp = MaybeUninit::<libc::timespec>::uninit();
     let tp = unsafe {
-        libc::clock_gettime(libc::CLOCK_MONOTONIC_COARSE, tp.as_mut_ptr());
+        libc::clock_gettime(libc::CLOCK_REALTIME, tp.as_mut_ptr());
         tp.assume_init()
     };
     tp.tv_sec as u64 * 1_000_000_000 + tp.tv_nsec as u64
@@ -39,7 +45,7 @@ pub(crate) fn current_cycle() -> u64 {
 #[cfg(target_os = "macos")]
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
-    unsafe { clock_gettime_nsec_np(CLOCK_MONOTONIC_RAW_APPROX) }
+    unsafe { clock_gettime_nsec_np(CLOCK_REALTIME) }
 }
 
 #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]
@@ -47,7 +53,7 @@ pub(crate) fn current_cycle() -> u64 {
 pub(crate) fn current_cycle() -> u64 {
     let mut tp = MaybeUninit::<libc::timespec>::uninit();
     let tp = unsafe {
-        libc::clock_gettime(libc::CLOCK_MONOTONIC_FAST, tp.as_mut_ptr());
+        libc::clock_gettime(libc::CLOCK_REALTIME, tp.as_mut_ptr());
         tp.assume_init()
     };
     tp.tv_sec as u64 * 1_000_000_000 + tp.tv_nsec as u64
@@ -83,8 +89,8 @@ pub(crate) fn current_cycle() -> u64 {
 #[cfg(target_os = "wasi")]
 #[inline]
 pub(crate) fn current_cycle() -> u64 {
-    use wasi::wasi_unstable::{clock_time_get, CLOCK_MONOTONIC};
-    clock_time_get(CLOCK_MONOTONIC, 1_000_000).unwrap_or(0)
+    use wasi::wasi_unstable::{clock_time_get, CLOCK_REALTIME};
+    clock_time_get(CLOCK_REALTIME, 1_000_000).unwrap_or(0)
 }
 
 #[cfg(test)]
